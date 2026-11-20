@@ -1,0 +1,187 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "de68f5fb53068c36df28",
+  "position": {
+    "x": 940,
+    "y": 664,
+    "z": 12,
+    "height": 392,
+    "width": 956,
+    "tabOrder": 12
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Columns": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fecha"
+                    }
+                  },
+                  "Property": "Año"
+                }
+              },
+              "queryRef": "fecha.Año",
+              "nativeQueryRef": "Año",
+              "active": true
+            }
+          ]
+        },
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ubicacion"
+                    }
+                  },
+                  "Property": "Partido"
+                }
+              },
+              "queryRef": "ubicacion.Partido",
+              "nativeQueryRef": "Partido",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ubicacion"
+                    }
+                  },
+                  "Property": "Localidad"
+                }
+              },
+              "queryRef": "ubicacion.Localidad",
+              "nativeQueryRef": "Localidad",
+              "active": false
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "incautaciones"
+                    }
+                  },
+                  "Property": "Procedimientos"
+                }
+              },
+              "queryRef": "incautaciones.Procedimientos",
+              "nativeQueryRef": "Procedimientos"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "incautaciones"
+                  }
+                },
+                "Property": "Procedimientos"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Procedimientos por zona y año (todos los años; + para ver localidades)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "232f29c4d660f3c3f8f5",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "incautaciones"
+              }
+            },
+            "Property": "Procedimientos"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "i",
+              "Entity": "incautaciones",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "i"
+                            }
+                          },
+                          "Property": "Procedimientos"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

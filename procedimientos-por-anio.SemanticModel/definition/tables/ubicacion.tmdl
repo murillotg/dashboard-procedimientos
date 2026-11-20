@@ -1,0 +1,76 @@
+table ubicacion
+	lineageTag: b46cf7cd-2abe-43c8-b82c-46f00e7f27f7
+
+	column UbicacionKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8eaddab3-5716-4712-a70d-0edf9161dc81
+		summarizeBy: none
+		sourceColumn: UbicacionKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Provincia
+		dataType: string
+		lineageTag: 5e19bd17-09a3-4cc4-8ce2-fb1b63d0f6c3
+		summarizeBy: none
+		sourceColumn: Provincia
+
+		annotation SummarizationSetBy = Automatic
+
+	column Partido
+		dataType: string
+		lineageTag: 3565d284-5882-44a4-933d-b839dcacf2ab
+		summarizeBy: none
+		sourceColumn: Partido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Localidad
+		dataType: string
+		lineageTag: f1de7785-96e3-4154-90f0-4c1a9ec7c3da
+		summarizeBy: none
+		sourceColumn: Localidad
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ubicacion = m
+		mode: import
+		source =
+				let
+				  // Datos FICTICIOS de ejemplo (zonas)
+				  Tabla = #table(
+				    type table [UbicacionKey = Int64.Type, Provincia = text, Partido = text, Localidad = text],
+				    {
+				      {1, "BUENOS AIRES", "ALMIRANTE BROWN", "ADROGUE"},
+				      {2, "BUENOS AIRES", "ALMIRANTE BROWN", "BURZACO"},
+				      {3, "BUENOS AIRES", "ALMIRANTE BROWN", "LONGCHAMPS"},
+				      {4, "BUENOS AIRES", "AVELLANEDA", "DOCK SUD"},
+				      {5, "BUENOS AIRES", "AVELLANEDA", "SARANDI"},
+				      {6, "BUENOS AIRES", "AVELLANEDA", "WILDE"},
+				      {7, "BUENOS AIRES", "LA MATANZA", "GONZALEZ CATAN"},
+				      {8, "BUENOS AIRES", "LA MATANZA", "SAN JUSTO"},
+				      {9, "BUENOS AIRES", "LA MATANZA", "VIRREY DEL PINO"},
+				      {10, "BUENOS AIRES", "LANUS", "LANUS ESTE"},
+				      {11, "BUENOS AIRES", "LANUS", "LANUS OESTE"},
+				      {12, "BUENOS AIRES", "LANUS", "REMEDIOS DE ESCALADA"},
+				      {13, "BUENOS AIRES", "LOMAS DE ZAMORA", "BANFIELD"},
+				      {14, "BUENOS AIRES", "LOMAS DE ZAMORA", "LOMAS DE ZAMORA"},
+				      {15, "BUENOS AIRES", "QUILMES", "BERNAL"},
+				      {16, "BUENOS AIRES", "QUILMES", "EZPELETA"},
+				      {17, "BUENOS AIRES", "QUILMES", "QUILMES"},
+				      {18, "CIUDAD AUTONOMA DE BUENOS AIRES", "CIUDAD AUTONOMA DE BUENOS AIRES", "BARRACAS"},
+				      {19, "CIUDAD AUTONOMA DE BUENOS AIRES", "CIUDAD AUTONOMA DE BUENOS AIRES", "BOCA"},
+				      {20, "CIUDAD AUTONOMA DE BUENOS AIRES", "CIUDAD AUTONOMA DE BUENOS AIRES", "CONSTITUCION"},
+				      {21, "CIUDAD AUTONOMA DE BUENOS AIRES", "CIUDAD AUTONOMA DE BUENOS AIRES", "FLORES"},
+				      {22, "CIUDAD AUTONOMA DE BUENOS AIRES", "CIUDAD AUTONOMA DE BUENOS AIRES", "PALERMO"},
+				      {23, "CIUDAD AUTONOMA DE BUENOS AIRES", "CIUDAD AUTONOMA DE BUENOS AIRES", "VILLA LUGANO"}
+				    })
+				in
+				  Tabla
+
+	annotation PBI_ResultType = Table
+

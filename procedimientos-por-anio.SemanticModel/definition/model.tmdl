@@ -1,0 +1,20 @@
+model Model
+	culture: es-MX
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-AR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["fecha","ubicacion","incautaciones"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table fecha
+ref table ubicacion
+ref table incautaciones
+
+ref cultureInfo es-MX
+

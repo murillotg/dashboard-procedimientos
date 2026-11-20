@@ -1,0 +1,129 @@
+table incautaciones
+	lineageTag: 769a0fc1-b71a-a08a-ae4a-7b5a5d7319ac
+
+	/// Sumarios distintos con al menos un ítem incautado registrado
+	measure Procedimientos = DISTINCTCOUNT ( incautaciones[ProcedimientoKey] )
+		formatString: #,0
+		lineageTag: e955b7d9-714f-80b9-43eb-886069573bfc
+
+	measure 'Procedimientos año anterior' = CALCULATE ( [Procedimientos], SAMEPERIODLASTYEAR ( fecha[Fecha] ) )
+		formatString: #,0
+		lineageTag: 325bc555-111b-b050-d5de-9d79cf60151f
+
+	measure 'Variación interanual' = VAR Anterior = [Procedimientos año anterior] RETURN IF ( NOT ISBLANK ( Anterior ), DIVIDE ( [Procedimientos] - Anterior, Anterior ) )
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 326e38c8-c06c-404e-6ac0-166751226531
+
+	measure 'Último año' = MAXX ( incautaciones, RELATED ( fecha[Año] ) )
+		formatString: 0
+		lineageTag: 83fff3d6-dfd9-9a06-0d77-0743aa3a91f5
+
+	measure 'Procedimientos último año' = VAR a = CALCULATE ( [Último año], ALL ( fecha ) ) RETURN CALCULATE ( [Procedimientos], fecha[Año] = a )
+		formatString: #,0
+		lineageTag: 4003ad85-a58b-17a5-9e97-1df0145153b7
+
+	measure 'Variación último año' = VAR a = CALCULATE ( [Último año], ALL ( fecha ) ) VAR Actual = CALCULATE ( [Procedimientos], fecha[Año] = a ) VAR Anterior = CALCULATE ( [Procedimientos], fecha[Año] = a - 1 ) RETURN IF ( NOT ISBLANK ( Anterior ), DIVIDE ( Actual - Anterior, Anterior ) )
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 10e7b6ca-8cef-423a-e4a5-ce0d046bb0b7
+
+	measure 'Promedio anual' = AVERAGEX ( FILTER ( VALUES ( fecha[Año] ), NOT ISBLANK ( [Procedimientos] ) ), [Procedimientos] )
+		formatString: #,0.0
+		lineageTag: 5bbec377-1d88-9e95-66bc-4bac6fa7d1e2
+
+	/// Participación de la zona sobre el total visible
+	measure '% del total' = DIVIDE ( [Procedimientos], CALCULATE ( [Procedimientos], ALLSELECTED ( ubicacion ) ) )
+		formatString: 0.0%
+		lineageTag: 8a7c5d8d-0018-3bd4-ae8a-79b901a39b84
+
+	measure 'Zonas con procedimientos' = COUNTROWS ( FILTER ( VALUES ( ubicacion[Partido] ), NOT ISBLANK ( [Procedimientos] ) ) )
+		formatString: #,0
+		lineageTag: 7c2d32d3-19a5-df82-c26d-ffe24099d736
+
+	/// Partido con más procedimientos (empates separados por /)
+	measure 'Zona principal' = VAR t = TOPN ( 1, FILTER ( VALUES ( ubicacion[Partido] ), NOT ISBLANK ( [Procedimientos] ) ), [Procedimientos], DESC ) RETURN CONCATENATEX ( t, ubicacion[Partido], " / " )
+		lineageTag: e589966a-b5b1-5c11-cb65-18a42eba1610
+
+	measure Subtítulo = VAR d = CALCULATE ( MAXX ( incautaciones, RELATED ( fecha[Fecha] ) ), ALL ( incautaciones ) ) RETURN "Fuente SIFEDESPRE · último procedimiento: " & FORMAT ( d, "dd/mm/yyyy" )
+		lineageTag: 656e1e95-8414-ab06-9395-65dea71e142d
+
+	column IncautacionKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 942a126f-3d50-e035-893b-6c9368c71986
+		summarizeBy: none
+		sourceColumn: IncautacionKey
+
+		annotation SummarizationSetBy = User
+
+	column ProcedimientoKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d7a6a4a4-c3aa-6d1c-20a6-ecb6eba4511e
+		summarizeBy: none
+		sourceColumn: ProcedimientoKey
+
+		annotation SummarizationSetBy = User
+
+	column DateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: da004e0a-e565-6407-42ef-761107c2e0ae
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = User
+
+	column UbicacionKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 943a55eb-af2c-4079-6dc2-4678feae591e
+		summarizeBy: none
+		sourceColumn: UbicacionKey
+
+		annotation SummarizationSetBy = User
+
+	partition incautaciones = m
+		mode: import
+		source =
+				let
+				  // Datos FICTICIOS de ejemplo: un registro por ítem incautado (IncautacionKey, ProcedimientoKey, DateKey, UbicacionKey)
+				  Tabla = #table(
+				    type table [IncautacionKey = Int64.Type, ProcedimientoKey = Int64.Type, DateKey = Int64.Type, UbicacionKey = Int64.Type],
+				    {
+				      {1, 3, 20220829, 1}, {2, 3, 20220829, 1}, {3, 14, 20220730, 19}, {4, 25, 20220513, 23}, {5, 25, 20220513, 23}, {6, 36, 20220330, 12},
+				      {7, 47, 20220604, 3}, {8, 47, 20220604, 3}, {9, 58, 20220214, 21}, {10, 58, 20220214, 21}, {11, 69, 20221127, 11}, {12, 69, 20221127, 11},
+				      {13, 69, 20221127, 11}, {14, 80, 20220511, 12}, {15, 91, 20220520, 14}, {16, 91, 20220520, 14}, {17, 91, 20220520, 14}, {18, 1, 20220703, 7},
+				      {19, 1, 20220703, 7}, {20, 2, 20220903, 23}, {21, 4, 20220407, 21}, {22, 5, 20220225, 20}, {23, 6, 20221226, 1}, {24, 6, 20221226, 1},
+				      {25, 7, 20220906, 12}, {26, 8, 20220825, 19}, {27, 9, 20220618, 3}, {28, 9, 20220618, 3}, {29, 9, 20220618, 3}, {30, 10, 20220729, 7},
+				      {31, 10, 20220729, 7}, {32, 10, 20220729, 7}, {33, 11, 20220621, 12}, {34, 12, 20220505, 18}, {35, 13, 20220418, 21}, {36, 13, 20220418, 21},
+				      {37, 13, 20220418, 21}, {38, 15, 20220211, 15}, {39, 15, 20220211, 15}, {40, 16, 20231220, 21}, {41, 16, 20231220, 21}, {42, 17, 20231130, 14},
+				      {43, 18, 20230609, 19}, {44, 18, 20230609, 19}, {45, 19, 20230222, 12}, {46, 19, 20230222, 12}, {47, 19, 20230222, 12}, {48, 19, 20230222, 12},
+				      {49, 20, 20231207, 12}, {50, 20, 20231207, 12}, {51, 21, 20230812, 17}, {52, 21, 20230812, 17}, {53, 22, 20230210, 5}, {54, 23, 20230220, 8},
+				      {55, 23, 20230220, 8}, {56, 23, 20230220, 8}, {57, 24, 20230715, 11}, {58, 24, 20230715, 11}, {59, 24, 20230715, 11}, {60, 26, 20230722, 15},
+				      {61, 26, 20230722, 15}, {62, 27, 20231124, 18}, {63, 28, 20230419, 15}, {64, 28, 20230419, 15}, {65, 29, 20230816, 5}, {66, 30, 20230815, 22},
+				      {67, 31, 20230826, 23}, {68, 32, 20231109, 11}, {69, 33, 20230808, 5}, {70, 34, 20230419, 21}, {71, 34, 20230419, 21}, {72, 35, 20230705, 5},
+				      {73, 35, 20230705, 5}, {74, 35, 20230705, 5}, {75, 37, 20230526, 19}, {76, 37, 20230526, 19}, {77, 38, 20230603, 4}, {78, 38, 20230603, 4},
+				      {79, 39, 20230606, 16}, {80, 39, 20230606, 16}, {81, 40, 20230902, 11}, {82, 40, 20230902, 11}, {83, 41, 20231202, 1}, {84, 42, 20230619, 13},
+				      {85, 42, 20230619, 13}, {86, 43, 20230730, 23}, {87, 43, 20230730, 23}, {88, 44, 20231202, 23}, {89, 44, 20231202, 23}, {90, 44, 20231202, 23},
+				      {91, 44, 20231202, 23}, {92, 45, 20230221, 1}, {93, 45, 20230221, 1}, {94, 45, 20230221, 1}, {95, 46, 20231130, 9}, {96, 46, 20231130, 9},
+				      {97, 48, 20230220, 9}, {98, 48, 20230220, 9}, {99, 49, 20240407, 10}, {100, 49, 20240407, 10}, {101, 50, 20241127, 2}, {102, 50, 20241127, 2},
+				      {103, 51, 20240618, 14}, {104, 52, 20240721, 5}, {105, 52, 20240721, 5}, {106, 52, 20240721, 5}, {107, 52, 20240721, 5}, {108, 53, 20240526, 4},
+				      {109, 54, 20241013, 13}, {110, 55, 20241204, 4}, {111, 55, 20241204, 4}, {112, 56, 20241019, 21}, {113, 56, 20241019, 21}, {114, 57, 20241103, 13},
+				      {115, 57, 20241103, 13}, {116, 59, 20240930, 18}, {117, 60, 20240630, 8}, {118, 60, 20240630, 8}, {119, 60, 20240630, 8}, {120, 61, 20241029, 18},
+				      {121, 61, 20241029, 18}, {122, 62, 20240222, 12}, {123, 62, 20240222, 12}, {124, 63, 20240124, 21}, {125, 63, 20240124, 21}, {126, 64, 20241121, 16},
+				      {127, 65, 20240416, 11}, {128, 65, 20240416, 11}, {129, 66, 20240908, 13}, {130, 67, 20241207, 17}, {131, 68, 20241212, 8}, {132, 70, 20240211, 11},
+				      {133, 71, 20240909, 22}, {134, 71, 20240909, 22}, {135, 71, 20240909, 22}, {136, 72, 20240420, 6}, {137, 72, 20240420, 6}, {138, 73, 20240204, 21},
+				      {139, 74, 20241216, 18}, {140, 75, 20240216, 8}, {141, 76, 20240803, 5}, {142, 77, 20240222, 19}, {143, 77, 20240222, 19}, {144, 78, 20241122, 23},
+				      {145, 79, 20240821, 21}, {146, 81, 20240606, 2}, {147, 82, 20240917, 14}, {148, 83, 20240605, 2}, {149, 84, 20241220, 4}, {150, 85, 20240221, 7},
+				      {151, 85, 20240221, 7}, {152, 85, 20240221, 7}, {153, 86, 20240227, 14}, {154, 86, 20240227, 14}, {155, 87, 20240626, 21}, {156, 88, 20241130, 22},
+				      {157, 88, 20241130, 22}, {158, 89, 20240611, 5}, {159, 89, 20240611, 5}, {160, 90, 20240501, 11}, {161, 92, 20241014, 9}, {162, 92, 20241014, 9}
+				    })
+				in
+				  Tabla
+
+	annotation PBI_ResultType = Table
+

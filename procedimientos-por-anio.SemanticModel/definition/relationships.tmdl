@@ -1,0 +1,8 @@
+relationship ec4c4116-822d-8920-7ec7-ae2700c80383
+	fromColumn: incautaciones.DateKey
+	toColumn: fecha.DateKey
+
+relationship b86203c1-26af-5509-4ee0-bc2cc6c6e46d
+	fromColumn: incautaciones.UbicacionKey
+	toColumn: ubicacion.UbicacionKey
+

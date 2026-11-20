@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "procedimientos-por-anio"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "967acfa1-d3b4-e612-ff13-9e104796ff2b"
+  }
+}

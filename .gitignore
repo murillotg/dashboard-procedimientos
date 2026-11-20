@@ -1,0 +1,10 @@
+# Configuración local y caché de Power BI (se regeneran al abrir el proyecto)
+**/.pbi/
+*.abf
+*.pbix
+
+# Planillas de datos: este repositorio solo usa los datos ficticios embebidos en el modelo
+*.xlsx
+*.xls
+*.csv
+.env

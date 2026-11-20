@@ -1,0 +1,20 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "fc74628f4c89f50eb745",
+  "displayName": "Por zona",
+  "displayOption": "FitToPage",
+  "height": 1080,
+  "width": 1920,
+  "visualInteractions": [
+    {
+      "source": "7b844d7eac989a93e36c",
+      "target": "ea3ab510efe2db46a9da",
+      "type": "NoFilter"
+    },
+    {
+      "source": "7b844d7eac989a93e36c",
+      "target": "de68f5fb53068c36df28",
+      "type": "NoFilter"
+    }
+  ]
+}

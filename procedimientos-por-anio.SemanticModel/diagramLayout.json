@@ -1,0 +1,61 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 334.1847511806298,
+            "y": -50
+          },
+          "nodeIndex": "incautaciones",
+          "nodeLineageTag": "769a0fc1-b71a-a08a-ae4a-7b5a5d7319ac",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 618.36163941535983,
+            "y": -36.675007367565115
+          },
+          "nodeIndex": "fecha",
+          "nodeLineageTag": "eb9a7cb5-9beb-4093-9613-1cf58824ba92",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": -6.9348908226582466
+          },
+          "nodeIndex": "ubicacion",
+          "nodeLineageTag": "b46cf7cd-2abe-43c8-b82c-46f00e7f27f7",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "Todas las tablas",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Todas las tablas",
+  "defaultDiagram": "Todas las tablas"
+}

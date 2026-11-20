@@ -1,0 +1,168 @@
+table fecha
+	lineageTag: eb9a7cb5-9beb-4093-9613-1cf58824ba92
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c1cbb4f7-8b44-406f-b4a8-af612b5f6cc9
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fecha
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: db126d30-3f8c-40dc-bdaf-d3d7a91e1355
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Año
+		dataType: int64
+		formatString: 0
+		lineageTag: 88469eb7-dee2-4661-93f0-09b9b425a7e8
+		summarizeBy: none
+		sourceColumn: Año
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre
+		dataType: string
+		lineageTag: 18a97b41-bec2-4b20-9887-3307d8138f44
+		summarizeBy: none
+		sourceColumn: Trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trimestre Nro'
+		dataType: int64
+		formatString: 0
+		lineageTag: 6b2342d6-9035-4e47-9581-f313947c9ff0
+		summarizeBy: none
+		sourceColumn: Trimestre Nro
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mes Nro'
+		dataType: int64
+		formatString: 0
+		lineageTag: 4782a155-a0d0-4f40-aeba-956abe4173d8
+		summarizeBy: none
+		sourceColumn: Mes Nro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes
+		dataType: string
+		lineageTag: 309b71c2-7e9f-44b1-b188-5b21f59156c7
+		summarizeBy: none
+		sourceColumn: Mes
+		sortByColumn: 'Mes Nro'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año-Mes
+		dataType: string
+		lineageTag: 07407857-8273-4724-98ed-25c01ddecee5
+		summarizeBy: none
+		sourceColumn: Año-Mes
+		sortByColumn: 'Año-Mes Nro'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Año-Mes Nro'
+		dataType: int64
+		formatString: 0
+		lineageTag: eb912d52-cf84-48da-8524-849029a8da00
+		summarizeBy: none
+		sourceColumn: Año-Mes Nro
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Semana ISO'
+		dataType: int64
+		formatString: 0
+		lineageTag: 313f730b-ddd8-4966-933f-a8d2ffff53c4
+		summarizeBy: none
+		sourceColumn: Semana ISO
+
+		annotation SummarizationSetBy = Automatic
+
+	column Día
+		dataType: int64
+		formatString: 0
+		lineageTag: 43a2a8a2-675c-44c7-b9e5-eb6d6f4f989a
+		summarizeBy: none
+		sourceColumn: Día
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Día semana Nro'
+		dataType: int64
+		formatString: 0
+		lineageTag: 0701c81a-b4fb-4414-9959-2b8b049a5ca1
+		summarizeBy: none
+		sourceColumn: Día semana Nro
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Día semana'
+		dataType: string
+		lineageTag: 295bdde5-6c1e-45b4-9328-648a46034be3
+		summarizeBy: none
+		sourceColumn: Día semana
+		sortByColumn: 'Día semana Nro'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Es fin de semana'
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: c43ef678-d931-4c30-82b3-fb942d444faa
+		summarizeBy: none
+		sourceColumn: Es fin de semana
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fecha = m
+		mode: import
+		source =
+				let
+				  // Calendario generado: no depende de ninguna base de datos
+				  Inicio = #date(2020, 1, 1),
+				  Fin = #date(2025, 12, 31),
+				  Dias = List.Dates(Inicio, Duration.Days(Fin - Inicio) + 1, #duration(1, 0, 0, 0)),
+				  Meses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"},
+				  DiasSemana = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"},
+				  Filas = List.Transform(Dias, each
+				    let
+				      d = _, a = Date.Year(d), m = Date.Month(d), t = Date.QuarterOfYear(d), ds = Date.DayOfWeek(d, Day.Monday) + 1
+				    in
+				      {a * 10000 + m * 100 + Date.Day(d), d, a, "T" & Text.From(t), t, m, Meses{m - 1},
+				       Text.From(a) & "-" & Text.PadStart(Text.From(m), 2, "0"), a * 100 + m, Date.WeekOfYear(d, Day.Monday),
+				       Date.Day(d), ds, DiasSemana{ds - 1}, ds >= 6}),
+				  Tabla = #table(
+				    type table [DateKey = Int64.Type, Fecha = date, #"Año" = Int64.Type, Trimestre = text, #"Trimestre Nro" = Int64.Type,
+				      #"Mes Nro" = Int64.Type, Mes = text, #"Año-Mes" = text, #"Año-Mes Nro" = Int64.Type, #"Semana ISO" = Int64.Type,
+				      #"Día" = Int64.Type, #"Día semana Nro" = Int64.Type, #"Día semana" = text, #"Es fin de semana" = logical],
+				    Filas)
+				in
+				  Tabla
+
+	annotation PBI_ResultType = Table
+
